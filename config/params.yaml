@@ -2,16 +2,18 @@
   ros__parameters:
 
     # Topics
-    pointCloudTopic: "/points"                   # Point cloud data
-    imuTopic: "/imu/data"                        # IMU data
-    odomTopic: "odometry/imu"                    # IMU pre-preintegration odometry, same frequency as IMU
-    gpsTopic: "odometry/gpsz"                    # GPS odometry topic from navsat, see module_navsat.launch file
+    pointCloudTopic: "synced_lidar"           # Point cloud data from sync node
+    imuTopic: "synced_imu"                    # IMU data from sync node
+    # pointCloudTopic: "unilidar/cloud"           # Point cloud data from sync node
+    # imuTopic: "bno055/imu_raw"                    # IMU data from sync node
+    odomTopic: "odometry/imu"                  # IMU pre-preintegration odometry, same frequency as IMU
+    gpsTopic: "odometry/gpsz"                  # GPS odometry topic from navsat, see module_navsat.launch file
 
     # Frames
-    lidarFrame: "lidar_link"
-    baselinkFrame: "base_link"
-    odometryFrame: "odom"
-    mapFrame: "map"
+    lidarFrame: "lidar_link"                   # LiDAR frame name
+    baselinkFrame: "lidar_link"                     # Robot base frame name
+    odometryFrame: "odom"                          # Odometry frame name
+    mapFrame: "map"                                # Map frame name
 
     # GPS Settings
     useImuHeadingInitialization: false           # if using GPS data, set to "true"
@@ -24,30 +26,31 @@
     savePCDDirectory: "/Downloads/LOAM/"         # in your home folder, starts and ends with "/". Warning: the code deletes "LOAM" folder then recreates it. See "mapOptimization" for implementation
 
     # Sensor Settings
-    sensor: ouster                               # lidar sensor type, either 'velodyne', 'ouster' or 'livox'
-    N_SCAN: 64                                   # number of lidar channels (i.e., Velodyne/Ouster: 16, 32, 64, 128, Livox Horizon: 6)
-    Horizon_SCAN: 512                            # lidar horizontal resolution (Velodyne:1800, Ouster:512,1024,2048, Livox Horizon: 4000)
-    downsampleRate: 1                            # default: 1. Downsample your data if too many
-    # points. i.e., 16 = 64 / 4, 16 = 16 / 1
-    lidarMinRange: 1.0                           # default: 1.0, minimum lidar range to be used
-    lidarMaxRange: 1000.0                        # default: 1000.0, maximum lidar range to be used
+    sensor: unitree                             # lidar sensor type, either 'velodyne', 'ouster' or 'livox' or 'unitree'
+    N_SCAN: 90                                  # number of lidar channels (i.e., Velodyne/Ouster: 16, 32, 64, 128, Livox Horizon: 6)
+    Horizon_SCAN: 1964                          # lidar horizontal resolution (Velodyne:1800, Ouster:512,1024,2048, Livox Horizon: 4000)
+    downsampleRate: 1                           # Ham nokta bulutunu seyreltme oranı (1 = seyreltme yok). Bu değer arttıkça, nokta bulutunun çözünürlüğü düşer. Feature kayıpları olur, işlem gücü azalır.
+    lidarMinRange: 0.5                          # default: 1.0, minimum lidar range to be used
+    lidarMaxRange: 10.0                         # default: 1000.0, maximum lidar range to be used
+    imu_rate: 100.0                             # IMU frequency in Hz
 
     # IMU Settings
-    imuAccNoise: 3.9939570888238808e-03
-    imuGyrNoise: 1.5636343949698187e-03
-    imuAccBiasN: 6.4356659353532566e-05
-    imuGyrBiasN: 3.5640318696367613e-05
+    imuAccNoise: 0.130                           # IMU accelerometer measurement noise standard deviation (m/s^2)
+    imuGyrNoise: 0.200                           # IMU gyroscope measurement noise standard deviation (rad/s)
+    imuAccBiasN: 0.001                          # IMU accelerometer bias random walk (m/s^2/sqrt(Hz))
+    imuGyrBiasN: 0.00005                        # IMU gyroscope bias random walk (rad/s/sqrt(Hz))
 
     imuGravity: 9.80511
     imuRPYWeight: 0.01
 
-    extrinsicTrans:  [ 0.0,  0.0,  -0.047 ]
-    extrinsicRot:    [-1.0,  0.0,  0.0,
-                       0.0,  1.0,  0.0,
-                       0.0,  0.0, -1.0 ]
-    extrinsicRPY: [ 0.0,  1.0,  0.0,
-                   -1.0,  0.0,  0.0,
-                    0.0,  0.0,  1.0 ]
+    extrinsicTrans: [ 0.0,  0.0,  -0.047 ]   # IMU'dan LiDAR'a öteleme [x, y, z] (metre). Lütfen bu değerleri kendi ölçümlerinize göre güncelleyin.
+    extrinsicRot: [ -1.0,  0.0,    0.0,
+                    0.0,   1.0,    0.0,
+                    0.0,   0.0,   -1.0 ]
+
+    extrinsicRPY: [ 1.0,  0.0,  0.0,
+                    0.0,  1.0,  0.0,
+                    0.0,  0.0, 1.0 ]
 
     # LOAM feature threshold
     edgeThreshold: 1.0
