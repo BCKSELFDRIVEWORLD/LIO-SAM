@@ -41,7 +41,7 @@
     imuGravity: 9.80511
     imuRPYWeight: 0.01
 
-    extrinsicTrans:  [ 0.0,  0.0,  0.0 ]
+    extrinsicTrans:  [ 0.0,  0.0,  -0.047 ]
     extrinsicRot:    [-1.0,  0.0,  0.0,
                        0.0,  1.0,  0.0,
                        0.0,  0.0, -1.0 ]
